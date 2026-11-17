@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Juego
+from .models import Juego, Torneo
 from .forms import JuegoForm
 
 
@@ -35,3 +35,8 @@ def juego_eliminar(request, pk):
         messages.success(request, 'Juego eliminado correctamente.')
         return redirect('juego_lista')
     return render(request, 'torneos/juego/eliminar.html', {'juego': juego})
+
+#torneo
+def torneo_lista(request):
+    torneos = Torneo.objects.select_related('juego')
+    return render(request, 'torneos/torneo/lista.html', {'torneos': torneos})
