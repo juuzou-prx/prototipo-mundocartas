@@ -11,7 +11,10 @@
         <div class="container">
             <a class="navbar-brand" href="/torneos/">Mundo Cartas</a>
             <ul class="navbar-nav">
-                <!-- cada integrante agrega aqui el enlace de su app -->
+                <li class="nav-item"><a class="nav-link" href="/torneos/">Torneos</a></li>
+                {% if user.is_staff %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'juego_lista' %}">Juegos</a></li>
+                {% endif %}
             </ul>
         </div>
     </nav>
