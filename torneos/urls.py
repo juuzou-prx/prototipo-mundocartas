@@ -3,9 +3,12 @@ from . import views
 
 urlpatterns = [
     path('', views.torneo_lista, name='torneo_lista'),
+    path('nuevo/', views.torneo_crear, name='torneo_crear'),
+    path('<int:pk>/', views.torneo_detalle, name='torneo_detalle'),
+    path('<int:pk>/editar/', views.torneo_editar, name='torneo_editar'),
+    path('<int:pk>/cancelar/', views.torneo_cancelar, name='torneo_cancelar'),
     path('juegos/', views.juego_lista, name='juego_lista'),
     path('juegos/nuevo/', views.juego_crear, name='juego_crear'),
     path('juegos/<int:pk>/editar/', views.juego_editar, name='juego_editar'),
     path('juegos/<int:pk>/eliminar/', views.juego_eliminar, name='juego_eliminar'),
-    path('<int:pk>/', views.torneo_detalle, name='torneo_detalle'),
 ]

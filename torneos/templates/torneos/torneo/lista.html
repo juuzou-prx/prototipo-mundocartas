@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% block title %}Torneos{% endblock %}
 {% block content %}
-<h1 class="h3 mb-3">Torneos</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Torneos</h1>
+  {% if user.is_staff %}
+  <a href="{% url 'torneo_crear' %}" class="btn btn-primary">Nuevo torneo</a>
+  {% endif %}
+</div>
+
 <table class="table table-striped align-middle">
   <thead>
     <tr>
@@ -29,6 +35,12 @@
       </td>
       <td class="text-end">
         <a href="{% url 'torneo_detalle' t.pk %}" class="btn btn-sm btn-outline-primary">Ver detalles</a>
+        {% if user.is_staff %}
+          <a href="{% url 'torneo_editar' t.pk %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+          {% if t.estado == 'programado' %}
+            <a href="{% url 'torneo_cancelar' t.pk %}" class="btn btn-sm btn-outline-danger">Cancelar</a>
+          {% endif %}
+        {% endif %}
       </td>
     </tr>
     {% empty %}

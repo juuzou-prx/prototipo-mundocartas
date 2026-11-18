@@ -12,6 +12,6 @@ class TorneoForm(forms.ModelForm):
         model = Torneo
         fields = ['nombre', 'juego', 'fecha', 'hora', 'cupo_maximo', 'costo', 'reglas']
         widgets = {
-            'fecha': forms.DateInput(attrs={'type': 'date'}),
-            'hora': forms.TimeInput(attrs={'type': 'time'}),
+            'fecha': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
+            'hora': forms.TimeInput(format='%H:%M', attrs={'type': 'time'}),
         }
