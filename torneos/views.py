@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from .models import Juego, Torneo
-from .forms import JuegoForm
-
+from .forms import JuegoForm, TorneoForm
 
 def juego_lista(request):
     juegos = Juego.objects.all()
@@ -44,3 +44,12 @@ def torneo_lista(request):
 def torneo_detalle(request, pk):
     torneo = get_object_or_404(Torneo, pk=pk)
     return render(request, 'torneos/torneo/detalle.html', {'torneo': torneo})
+
+@staff_member_required
+def torneo_crear(request):
+    form = TorneoForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Torneo creado correctamente.')
+        return redirect('torneo_lista')
+    return render(request, 'torneos/torneo/form.html', {'form': form, 'titulo': 'Nuevo torneo'})
