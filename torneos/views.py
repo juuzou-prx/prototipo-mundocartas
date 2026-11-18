@@ -53,3 +53,13 @@ def torneo_crear(request):
         messages.success(request, 'Torneo creado correctamente.')
         return redirect('torneo_lista')
     return render(request, 'torneos/torneo/form.html', {'form': form, 'titulo': 'Nuevo torneo'})
+
+@staff_member_required
+def torneo_editar(request, pk):
+    torneo = get_object_or_404(Torneo, pk=pk)
+    form = TorneoForm(request.POST or None, instance=torneo)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Torneo actualizado correctamente.')
+        return redirect('torneo_lista')
+    return render(request, 'torneos/torneo/form.html', {'form': form, 'titulo': 'Editar torneo'})

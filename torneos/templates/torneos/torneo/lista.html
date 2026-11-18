@@ -35,6 +35,9 @@
       </td>
       <td class="text-end">
         <a href="{% url 'torneo_detalle' t.pk %}" class="btn btn-sm btn-outline-primary">Ver detalles</a>
+        {% if user.is_staff %}
+        <a href="{% url 'torneo_editar' t.pk %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+        {% endif %}
       </td>
     </tr>
     {% empty %}
