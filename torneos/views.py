@@ -63,3 +63,13 @@ def torneo_editar(request, pk):
         messages.success(request, 'Torneo actualizado correctamente.')
         return redirect('torneo_lista')
     return render(request, 'torneos/torneo/form.html', {'form': form, 'titulo': 'Editar torneo'})
+
+@staff_member_required
+def torneo_cancelar(request, pk):
+    torneo = get_object_or_404(Torneo, pk=pk)
+    if request.method == 'POST':
+        torneo.estado = 'cancelado'
+        torneo.save()
+        messages.success(request, 'Torneo cancelado correctamente.')
+        return redirect('torneo_lista')
+    return render(request, 'torneos/torneo/cancelar.html', {'torneo': torneo})
