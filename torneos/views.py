@@ -10,7 +10,7 @@ def juego_lista(request):
 
 
 def juego_crear(request):
-    form = JuegoForm(request.POST or None)
+    form = JuegoForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         form.save()
         messages.success(request, 'Juego creado correctamente.')
@@ -20,7 +20,7 @@ def juego_crear(request):
 
 def juego_editar(request, pk):
     juego = get_object_or_404(Juego, pk=pk)
-    form = JuegoForm(request.POST or None, instance=juego)
+    form = JuegoForm(request.POST or None, request.FILES or None, instance=juego)
     if form.is_valid():
         form.save()
         messages.success(request, 'Juego actualizado correctamente.')
@@ -40,3 +40,7 @@ def juego_eliminar(request, pk):
 def torneo_lista(request):
     torneos = Torneo.objects.select_related('juego')
     return render(request, 'torneos/torneo/lista.html', {'torneos': torneos})
+
+def torneo_detalle(request, pk):
+    torneo = get_object_or_404(Torneo, pk=pk)
+    return render(request, 'torneos/torneo/detalle.html', {'torneo': torneo})

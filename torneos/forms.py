@@ -5,7 +5,7 @@ from .models import Juego, Torneo
 class JuegoForm(forms.ModelForm):
     class Meta:
         model = Juego
-        fields = ['nombre', 'descripcion']
+        fields = ['nombre', 'descripcion', 'imagen']
 
 class TorneoForm(forms.ModelForm):
     class Meta:
