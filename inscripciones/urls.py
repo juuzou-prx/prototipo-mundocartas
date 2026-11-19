@@ -8,4 +8,6 @@ urlpatterns = [
     path('torneo/<int:torneo_id>/inscritos/', views.lista_inscritos, name='lista_inscritos'),
     path('pagar/<int:inscripcion_id>/', views.iniciar_pago, name='iniciar_pago'),
     path('pago-exitoso/', views.pago_exitoso, name='pago_exitoso'),
+    
+    path('pago/<int:pago_id>/cambiar/', views.cambiar_pago, name='cambiar_pago'),
 ]

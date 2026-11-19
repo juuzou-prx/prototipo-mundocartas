@@ -18,6 +18,12 @@
       <td>
         {% if i.pago.estado == 'pagado' %}<span class="badge bg-success">Pagado</span>
         {% else %}<span class="badge bg-warning text-dark">Pendiente</span>{% endif %}
+        <form method="post" action="{% url 'cambiar_pago' i.pago.pk %}" class="d-inline ms-2">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sm btn-outline-secondary">
+            {% if i.pago.estado == 'pagado' %}Marcar pendiente{% else %}Marcar pagado{% endif %}
+          </button>
+        </form>
       </td>
     </tr>
     {% empty %}

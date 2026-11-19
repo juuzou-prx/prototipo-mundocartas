@@ -135,3 +135,20 @@ def pago_exitoso(request):
     pago.save()
     messages.success(request, 'Pago exitoso con Webpay.')
     return render(request, 'inscripciones/pago_exitoso.html', {'pago': pago, 'response': response})
+
+@staff_member_required
+def cambiar_pago(request, pago_id):
+    pago = get_object_or_404(Pago, pk=pago_id)
+    if request.method == 'POST':
+        if pago.estado == 'pendiente':
+            pago.estado = 'pagado'
+            pago.fecha_pago = timezone.now()
+            pago.registrado_por = request.user
+            messages.success(request, 'Pago registrado como pagado.')
+        else:
+            pago.estado = 'pendiente'
+            pago.fecha_pago = None
+            pago.registrado_por = None
+            messages.info(request, 'Pago marcado como pendiente.')
+        pago.save()
+    return redirect('lista_inscritos', torneo_id=pago.inscripcion.torneo_id)    
