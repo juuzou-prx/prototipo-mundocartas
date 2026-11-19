@@ -26,6 +26,8 @@
   {% if user.is_authenticated %}
     {% if inscrito %}
       <span class="badge bg-success fs-6">Ya estás inscrito</span>
+    {% elif cupos <= 0 %}
+      <span class="badge bg-danger fs-6">Cupo lleno</span>
     {% elif torneo.estado == 'programado' %}
       <form method="post" action="{% url 'inscribirse' torneo.pk %}">
         {% csrf_token %}

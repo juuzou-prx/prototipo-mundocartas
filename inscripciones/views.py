@@ -11,6 +11,8 @@ def inscribirse(request, torneo_id):
     if request.method == 'POST':
         if torneo.estado != 'programado':
             messages.error(request, 'Este torneo no admite inscripciones.')
+        elif torneo.inscripciones.filter(estado='activa').count() >= torneo.cupo_maximo:
+            messages.error(request, 'El cupo de este torneo está lleno.')
         else:
             insc, creada = Inscripcion.objects.get_or_create(usuario=request.user, torneo=torneo)
             if creada:
