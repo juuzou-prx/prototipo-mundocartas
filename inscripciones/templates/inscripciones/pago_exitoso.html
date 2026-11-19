@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Pago exitoso{% endblock %}
+{% block content %}
+<div class="alert alert-success"><h1 class="h4 mb-0">¡Pago exitoso!</h1></div>
+<ul class="list-group mb-3">
+  <li class="list-group-item"><strong>Torneo:</strong> {{ pago.inscripcion.torneo.nombre }}</li>
+  <li class="list-group-item"><strong>Monto:</strong> ${{ response.amount }}</li>
+  <li class="list-group-item"><strong>Orden:</strong> {{ response.buy_order }}</li>
+  <li class="list-group-item"><strong>Código de autorización:</strong> {{ response.authorization_code }}</li>
+</ul>
+<a href="{% url 'mis_inscripciones' %}" class="btn btn-primary">Volver a mis torneos</a>
+{% endblock %}

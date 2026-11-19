@@ -10,6 +10,7 @@
       <th>Torneo</th>
       <th>Juego</th>
       <th>Estado del torneo</th>
+      <th>Pago</th>
       <th class="text-end">Acciones</th>
     </tr>
   </thead>
@@ -21,15 +22,23 @@
       <td>{{ i.torneo.nombre }}</td>
       <td>{{ i.torneo.juego.nombre }}</td>
       <td>{{ i.torneo.get_estado_display }}</td>
+      <td>
+        {% if i.pago.estado == 'pagado' %}<span class="badge bg-success">Pagado</span>
+        {% elif i.torneo.costo > 0 %}<span class="badge bg-warning text-dark">Pendiente</span>
+        {% else %}<span class="badge bg-secondary">Sin costo</span>{% endif %}
+      </td>
       <td class="text-end">
         <a href="{% url 'torneo_detalle' i.torneo.pk %}" class="btn btn-sm btn-outline-primary">Ver detalles</a>
+        {% if i.pago.estado != 'pagado' and i.torneo.costo > 0 and i.torneo.estado == 'programado' %}
+        <a href="{% url 'iniciar_pago' i.pk %}" class="btn btn-sm btn-success">Pagar con Webpay</a>
+        {% endif %}
         {% if i.torneo.estado == 'programado' %}
         <a href="{% url 'cancelar_inscripcion' i.pk %}" class="btn btn-sm btn-outline-danger">Cancelar inscripción</a>
         {% endif %}
       </td>
     </tr>
     {% empty %}
-    <tr><td colspan="6" class="text-center text-muted">Aún no estás inscrito en ningún torneo.</td></tr>
+    <tr><td colspan="7" class="text-center text-muted">Aún no estás inscrito en ningún torneo.</td></tr>
     {% endfor %}
   </tbody>
 </table>

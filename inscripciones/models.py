@@ -19,3 +19,20 @@ class Inscripcion(models.Model):
 
     def __str__(self):
         return f'{self.usuario} - {self.torneo}'
+
+class Pago(models.Model):
+    ESTADOS = [
+        ('pendiente', 'Pendiente'),
+        ('pagado', 'Pagado'),
+    ]
+
+    inscripcion = models.OneToOneField(Inscripcion, on_delete=models.CASCADE, related_name='pago')
+    monto = models.PositiveIntegerField(default=0)
+    estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
+    fecha_pago = models.DateTimeField(null=True, blank=True)
+    registrado_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='pagos_registrados')
+
+    def __str__(self):
+        return f'Pago de {self.inscripcion} ({self.estado})'
