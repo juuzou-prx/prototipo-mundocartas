@@ -57,7 +57,10 @@ def cancelar_inscripcion(request, pk):
 @staff_member_required
 def lista_inscritos(request, torneo_id):
     torneo = get_object_or_404(Torneo, pk=torneo_id)
-    inscripciones = torneo.inscripciones.filter(estado='activa').select_related('usuario')
+    activas = torneo.inscripciones.filter(estado='activa')
+    for i in activas:
+        Pago.objects.get_or_create(inscripcion=i, defaults={'monto': torneo.costo})
+    inscripciones = activas.select_related('usuario', 'pago')
     return render(request, 'inscripciones/lista_inscritos.html', {
         'torneo': torneo,
         'inscripciones': inscripciones,

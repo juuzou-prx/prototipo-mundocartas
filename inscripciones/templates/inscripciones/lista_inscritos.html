@@ -6,7 +6,7 @@
 <p><strong>Total:</strong> {{ inscripciones|length }} de {{ torneo.cupo_maximo }}</p>
 <table class="table table-striped align-middle">
   <thead>
-    <tr><th>#</th><th>Jugador</th><th>Correo</th><th>Fecha de inscripción</th></tr>
+    <tr><th>#</th><th>Jugador</th><th>Correo</th><th>Fecha de inscripción</th><th>Pago</th></tr>
   </thead>
   <tbody>
     {% for i in inscripciones %}
@@ -15,9 +15,13 @@
       <td>{{ i.usuario.get_full_name|default:i.usuario.username }}</td>
       <td>{{ i.usuario.email }}</td>
       <td>{{ i.fecha_inscripcion|date:"d/m/Y H:i" }}</td>
+      <td>
+        {% if i.pago.estado == 'pagado' %}<span class="badge bg-success">Pagado</span>
+        {% else %}<span class="badge bg-warning text-dark">Pendiente</span>{% endif %}
+      </td>
     </tr>
     {% empty %}
-    <tr><td colspan="4" class="text-center text-muted">Aún no hay jugadores inscritos.</td></tr>
+    <tr><td colspan="5" class="text-center text-muted">Aún no hay jugadores inscritos.</td></tr>
     {% endfor %}
   </tbody>
 </table>
