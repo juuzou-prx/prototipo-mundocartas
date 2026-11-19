@@ -15,24 +15,28 @@
     <div class="row g-3 mt-2 fs-5">
       <div class="col-6"><strong>Fecha:</strong> {{ torneo.fecha|date:"d/m/Y" }}</div>
       <div class="col-6"><strong>Hora:</strong> {{ torneo.hora|time:"H:i" }}</div>
-      <div class="col-6"><strong>Cupo:</strong> {{ torneo.cupo_maximo }}</div>
+      <div class="col-6"><strong>Cupos disponibles:</strong> {{ cupos }} de {{ torneo.cupo_maximo }}</div>
       <div class="col-6"><strong>Inscripción:</strong> ${{ torneo.costo }}</div>
       <div class="col-12"><strong>Estado:</strong> {{ torneo.get_estado_display }}</div>
     </div>
   </div>
 </div>
+
 <div class="mb-4">
   {% if user.is_authenticated %}
-    {% if torneo.estado == 'programado' %}
-    <form method="post" action="{% url 'inscribirse' torneo.pk %}">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-success btn-lg">Inscribirme</button>
-    </form>
+    {% if inscrito %}
+      <span class="badge bg-success fs-6">Ya estás inscrito</span>
+    {% elif torneo.estado == 'programado' %}
+      <form method="post" action="{% url 'inscribirse' torneo.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success btn-lg">Inscribirme</button>
+      </form>
     {% endif %}
   {% else %}
     <p class="text-muted">Inicia sesión para inscribirte.</p>
   {% endif %}
 </div>
+
 <h2 class="h4">Reglas</h2>
 <p class="fs-5">{{ torneo.reglas|default:"Sin reglas especificadas."|linebreaksbr }}</p>
 

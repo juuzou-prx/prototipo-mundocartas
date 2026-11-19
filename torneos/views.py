@@ -43,7 +43,15 @@ def torneo_lista(request):
 
 def torneo_detalle(request, pk):
     torneo = get_object_or_404(Torneo, pk=pk)
-    return render(request, 'torneos/torneo/detalle.html', {'torneo': torneo})
+    inscritos = torneo.inscripciones.filter(estado='activa').count()
+    inscrito = request.user.is_authenticated and torneo.inscripciones.filter(
+        usuario=request.user, estado='activa').exists()
+    return render(request, 'torneos/torneo/detalle.html', {
+        'torneo': torneo,
+        'inscritos': inscritos,
+        'cupos': torneo.cupo_maximo - inscritos,
+        'inscrito': inscrito,
+    })
 
 @staff_member_required
 def torneo_crear(request):
