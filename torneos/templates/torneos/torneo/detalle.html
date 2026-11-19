@@ -43,4 +43,9 @@
 <p class="fs-5">{{ torneo.reglas|default:"Sin reglas especificadas."|linebreaksbr }}</p>
 
 <a href="{% url 'torneo_lista' %}" class="btn btn-outline-secondary mt-3">Volver a torneos</a>
+{% if user.is_staff %}
+  <a href="{% url 'lista_inscritos' torneo.pk %}" class="btn btn-outline-primary mt-3 ms-2">
+    Ver inscritos y pagos
+  </a>
+{% endif %}
 {% endblock %}
