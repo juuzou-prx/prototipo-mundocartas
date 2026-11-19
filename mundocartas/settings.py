@@ -30,7 +30,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
-
+WEBPAY_COMMERCE_CODE = os.getenv('WEBPAY_COMMERCE_CODE')
+WEBPAY_API_KEY = os.getenv('WEBPAY_API_KEY')
+WEBPAY_ENV = os.getenv('WEBPAY_ENV', 'TEST')
 # Application definition
 
 INSTALLED_APPS = [

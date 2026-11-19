@@ -9,6 +9,7 @@ django-crispy-forms = "*"
 crispy-bootstrap5 = "*"
 pillow = "*"
 python-dotenv = "*"
+transbank-sdk = "*"
 
 [dev-packages]
 
