@@ -44,3 +44,13 @@ def cancelar_inscripcion(request, pk):
         messages.success(request, 'Tu inscripción fue cancelada.')
         return redirect('mis_inscripciones')
     return render(request, 'inscripciones/cancelar_inscripcion.html', {'inscripcion': inscripcion})
+
+
+@staff_member_required
+def lista_inscritos(request, torneo_id):
+    torneo = get_object_or_404(Torneo, pk=torneo_id)
+    inscripciones = torneo.inscripciones.filter(estado='activa').select_related('usuario')
+    return render(request, 'inscripciones/lista_inscritos.html', {
+        'torneo': torneo,
+        'inscripciones': inscripciones,
+    })
