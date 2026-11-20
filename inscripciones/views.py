@@ -57,7 +57,10 @@ def cancelar_inscripcion(request, pk):
 @staff_member_required
 def lista_inscritos(request, torneo_id):
     torneo = get_object_or_404(Torneo, pk=torneo_id)
-    inscripciones = torneo.inscripciones.filter(estado='activa').select_related('usuario')
+    activas = torneo.inscripciones.filter(estado='activa')
+    for i in activas:
+        Pago.objects.get_or_create(inscripcion=i, defaults={'monto': torneo.costo})
+    inscripciones = activas.select_related('usuario', 'pago')
     return render(request, 'inscripciones/lista_inscritos.html', {
         'torneo': torneo,
         'inscripciones': inscripciones,
@@ -132,3 +135,20 @@ def pago_exitoso(request):
     pago.save()
     messages.success(request, 'Pago exitoso con Webpay.')
     return render(request, 'inscripciones/pago_exitoso.html', {'pago': pago, 'response': response})
+
+@staff_member_required
+def cambiar_pago(request, pago_id):
+    pago = get_object_or_404(Pago, pk=pago_id)
+    if request.method == 'POST':
+        if pago.estado == 'pendiente':
+            pago.estado = 'pagado'
+            pago.fecha_pago = timezone.now()
+            pago.registrado_por = request.user
+            messages.success(request, 'Pago registrado como pagado.')
+        else:
+            pago.estado = 'pendiente'
+            pago.fecha_pago = None
+            pago.registrado_por = None
+            messages.info(request, 'Pago marcado como pendiente.')
+        pago.save()
+    return redirect('lista_inscritos', torneo_id=pago.inscripcion.torneo_id)    
