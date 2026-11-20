@@ -60,9 +60,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # rutas de autenticacion (app usuarios)
-LOGIN_URL = '/usuarios/login/'
+LOGIN_URL = '/usuarios/iniciar_sesion/'
 LOGIN_REDIRECT_URL = '/torneos/'
-LOGOUT_REDIRECT_URL = '/usuarios/login/'
+LOGOUT_REDIRECT_URL = '/usuarios/iniciar_sesion/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
