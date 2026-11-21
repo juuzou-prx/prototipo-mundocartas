@@ -1,52 +1,57 @@
 {% extends "base.html" %}
 {% block title %}Torneos{% endblock %}
-{% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">Torneos</h1>
-  {% if user.is_staff %}
-  <a href="{% url 'torneo_crear' %}" class="btn btn-primary">Nuevo torneo</a>
-  {% endif %}
-</div>
 
-<table class="table table-striped align-middle">
-  <thead>
-    <tr>
-      <th>Fecha</th>
-      <th>Hora</th>
-      <th>Torneo</th>
-      <th>Juego</th>
-      <th>Cupo</th>
-      <th>Estado</th>
-      <th class="text-end">Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for t in torneos %}
-    <tr>
-      <td>{{ t.fecha|date:"d/m/Y" }}</td>
-      <td>{{ t.hora|time:"H:i" }}</td>
-      <td>{{ t.nombre }}</td>
-      <td>{{ t.juego.nombre }}</td>
-      <td>{{ t.cupo_maximo }}</td>
-      <td>
-        {% if t.estado == 'cancelado' %}<span class="badge bg-danger">Cancelado</span>
-        {% elif t.estado == 'finalizado' %}<span class="badge bg-secondary">Finalizado</span>
-        {% else %}<span class="badge bg-success">Programado</span>{% endif %}
-      </td>
-      <td class="text-end">
-        <a href="{% url 'torneo_detalle' t.pk %}" class="btn btn-sm btn-outline-primary">Ver detalles</a>
-        {% if user.is_staff %}
-          <a href="{% url 'torneo_editar' t.pk %}" class="btn btn-sm btn-outline-secondary">Editar</a>
-          <a href="{% url 'lista_inscritos' t.pk %}" class="btn btn-sm btn-outline-dark">Inscritos</a>
-          {% if t.estado == 'programado' %}
-            <a href="{% url 'torneo_cancelar' t.pk %}" class="btn btn-sm btn-outline-danger">Cancelar</a>
-          {% endif %}
+{% block banner %}
+<div class="banner-pagina">
+  <h1>Torneos</h1>
+  <p class="mb-0">Elige un torneo, revisa los cupos y reserva tu lugar</p>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if user.is_staff %}
+<div class="text-end mb-3">
+  <a href="{% url 'torneo_crear' %}" class="btn btn-primary">Nuevo torneo</a>
+</div>
+{% endif %}
+
+<div class="row g-4">
+  {% for t in torneos %}
+  <div class="col-12 col-sm-6 col-lg-4">
+    <div class="card tarjeta-torneo h-100">
+      <div class="tarjeta-img">
+        {% if t.juego.imagen %}
+        <img src="{{ t.juego.imagen.url }}" alt="{{ t.juego.nombre }}">
+        {% else %}
+        <span>{{ t.juego.nombre }}</span>
         {% endif %}
-      </td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="7" class="text-center text-muted">No hay torneos programados.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+        {% if t.estado == 'cancelado' %}<span class="badge bg-danger etiqueta-estado">Cancelado</span>
+        {% elif t.estado == 'finalizado' %}<span class="badge bg-secondary etiqueta-estado">Finalizado</span>
+        {% else %}<span class="badge bg-success etiqueta-estado">Programado</span>{% endif %}
+      </div>
+      <div class="card-body">
+        <p class="text-muted small mb-1">{{ t.juego.nombre }}</p>
+        <h2 class="h5">{{ t.nombre }}</h2>
+        <p class="mb-1"><strong>Fecha:</strong> {{ t.fecha|date:"d/m/Y" }} a las {{ t.hora|time:"H:i" }}</p>
+        <p class="mb-1"><strong>Cupo:</strong> {{ t.cupo_maximo }}</p>
+        <p class="mb-0"><strong>Inscripción:</strong> {% if t.costo %}${{ t.costo }}{% else %}Gratis{% endif %}</p>
+      </div>
+      <div class="card-footer bg-white border-0 pb-3">
+        <a href="{% url 'torneo_detalle' t.pk %}" class="btn btn-sm btn-primary">Ver detalles</a>
+        {% if user.is_staff %}
+        <a href="{% url 'torneo_editar' t.pk %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+        <a href="{% url 'lista_inscritos' t.pk %}" class="btn btn-sm btn-outline-dark">Inscritos</a>
+        {% if t.estado == 'programado' %}
+        <a href="{% url 'torneo_cancelar' t.pk %}" class="btn btn-sm btn-outline-danger">Cancelar</a>
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12">
+    <p class="text-center text-muted">No hay torneos programados.</p>
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}
