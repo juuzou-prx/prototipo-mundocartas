@@ -10,4 +10,5 @@ urlpatterns = [
     path('pago-exitoso/', views.pago_exitoso, name='pago_exitoso'),
     
     path('pago/<int:pago_id>/cambiar/', views.cambiar_pago, name='cambiar_pago'),
+    path('asistencia/<int:asistencia_id>/cambiar/', views.cambiar_participacion, name='cambiar_participacion'),
 ]
