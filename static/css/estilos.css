@@ -1,0 +1,63 @@
+:root {
+  --mc-negro: #111111;
+  --mc-azul: #2f6fd0;
+  --mc-azul-oscuro: #2358a8;
+  --mc-gris: #f5f6f8;
+}
+
+body {
+  font-family: 'Jost', sans-serif;
+  background: #ffffff;
+  color: #222222;
+}
+
+.barra-aviso {
+  background: var(--mc-azul);
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.navbar-mc {
+  background: var(--mc-negro);
+}
+
+.navbar-mc .nav-link {
+  color: #ffffff;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+}
+
+.navbar-mc .nav-link:hover {
+  color: var(--mc-azul);
+}
+
+.btn-primary {
+  background-color: var(--mc-azul);
+  border-color: var(--mc-azul);
+}
+
+.btn-primary:hover {
+  background-color: var(--mc-azul-oscuro);
+  border-color: var(--mc-azul-oscuro);
+}
+
+.btn-outline-primary {
+  color: var(--mc-azul);
+  border-color: var(--mc-azul);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--mc-azul);
+  border-color: var(--mc-azul);
+}
+
+a {
+  color: var(--mc-azul);
+}
+
+.footer-mc {
+  background: var(--mc-negro);
+  color: #cccccc;
+  font-size: 0.9rem;
+}
