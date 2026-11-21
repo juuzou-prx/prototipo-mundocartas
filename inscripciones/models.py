@@ -36,3 +36,11 @@ class Pago(models.Model):
 
     def __str__(self):
         return f'Pago de {self.inscripcion} ({self.estado})'
+
+class Asistencia(models.Model):
+    inscripcion = models.OneToOneField(Inscripcion, on_delete=models.CASCADE, related_name='asistencia')
+    participo = models.BooleanField(default=False)
+    fecha_registro = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Asistencia de {self.inscripcion}'

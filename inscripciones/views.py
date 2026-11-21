@@ -11,8 +11,7 @@ from transbank.common.integration_type import IntegrationType
 from transbank.common.options import WebpayOptions
 from transbank.webpay.webpay_plus.transaction import Transaction
 from torneos.models import Torneo
-from .models import Inscripcion, Pago
-
+from .models import Inscripcion, Pago, Asistencia
 
 @login_required
 def inscribirse(request, torneo_id):
@@ -60,7 +59,8 @@ def lista_inscritos(request, torneo_id):
     activas = torneo.inscripciones.filter(estado='activa')
     for i in activas:
         Pago.objects.get_or_create(inscripcion=i, defaults={'monto': torneo.costo})
-    inscripciones = activas.select_related('usuario', 'pago')
+        Asistencia.objects.get_or_create(inscripcion=i)
+    inscripciones = activas.select_related('usuario', 'pago', 'asistencia')
     return render(request, 'inscripciones/lista_inscritos.html', {
         'torneo': torneo,
         'inscripciones': inscripciones,
@@ -151,4 +151,14 @@ def cambiar_pago(request, pago_id):
             pago.registrado_por = None
             messages.info(request, 'Pago marcado como pendiente.')
         pago.save()
-    return redirect('lista_inscritos', torneo_id=pago.inscripcion.torneo_id)    
+    return redirect('lista_inscritos', torneo_id=pago.inscripcion.torneo_id)
+
+@staff_member_required
+def cambiar_participacion(request, asistencia_id):
+    asistencia = get_object_or_404(Asistencia, pk=asistencia_id)
+    if request.method == 'POST':
+        asistencia.participo = not asistencia.participo
+        asistencia.fecha_registro = timezone.now() if asistencia.participo else None
+        asistencia.save()
+        messages.success(request, 'Participación actualizada.')
+    return redirect('lista_inscritos', torneo_id=asistencia.inscripcion.torneo_id)    
