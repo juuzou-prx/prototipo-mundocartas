@@ -1,58 +1,59 @@
 {% extends "base.html" %}
 {% block title %}Inscritos - {{ torneo.nombre }}{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <div>
-    <h1 class="h3 mb-1">Inscritos</h1>
-    <p class="text-muted mb-0">{{ torneo.nombre }} · {{ torneo.juego.nombre }} · {{ torneo.fecha|date:"d/m/Y" }}</p>
+<h1 class="titulo-seccion mb-4">{{ titulo }}</h1>
+<p class="text-muted mb-1">{{ torneo.nombre }} · {{ torneo.juego.nombre }} · {{ torneo.fecha|date:"d/m/Y" }}</p>
+<p class="mb-4"><strong>Total:</strong> {{ inscripciones|length }} de {{ torneo.cupo_maximo }}</p>
+
+<div class="card tarjeta-tabla mb-4">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Jugador</th>
+          <th>Correo</th>
+          <th>Fecha de inscripción</th>
+          <th>Pago</th>
+          <th>Participó</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in inscripciones %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ i.usuario.get_full_name|default:i.usuario.username }}</td>
+          <td>{{ i.usuario.email|default:"-" }}</td>
+          <td>{{ i.fecha_inscripcion|date:"d/m/Y H:i" }}</td>
+          <td>
+            {% if i.pago.estado == 'pagado' %}<span class="badge bg-success">Pagado</span>
+            {% else %}<span class="badge bg-warning text-dark">Pendiente</span>{% endif %}
+            <form method="post" action="{% url 'cambiar_pago' i.pago.pk %}" class="d-inline ms-2">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-secondary">
+                {% if i.pago.estado == 'pagado' %}Marcar pendiente{% else %}Marcar pagado{% endif %}
+              </button>
+            </form>
+          </td>
+          <td>
+            {% if i.asistencia.participo %}<span class="badge bg-success">Sí</span>
+            {% else %}<span class="badge bg-secondary">No</span>{% endif %}
+            <form method="post" action="{% url 'cambiar_participacion' i.asistencia.pk %}" class="d-inline ms-2">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-secondary">
+                {% if i.asistencia.participo %}Quitar{% else %}Marcar participó{% endif %}
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center text-muted py-4">Aún no hay jugadores inscritos.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
-  <a href="{% url 'torneo_detalle' torneo.pk %}" class="btn btn-outline-secondary">Volver al torneo</a>
 </div>
 
-<p><strong>Total:</strong> {{ inscripciones|length }} de {{ torneo.cupo_maximo }}</p>
-
-<table class="table table-striped align-middle">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Jugador</th>
-      <th>Correo</th>
-      <th>Fecha de inscripción</th>
-      <th>Pago</th>
-      <th>Participó</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for i in inscripciones %}
-    <tr>
-      <td>{{ forloop.counter }}</td>
-      <td>{{ i.usuario.get_full_name|default:i.usuario.username }}</td>
-      <td>{{ i.usuario.email }}</td>
-      <td>{{ i.fecha_inscripcion|date:"d/m/Y H:i" }}</td>
-      <td>
-        {% if i.pago.estado == 'pagado' %}<span class="badge bg-success">Pagado</span>
-        {% else %}<span class="badge bg-warning text-dark">Pendiente</span>{% endif %}
-        <form method="post" action="{% url 'cambiar_pago' i.pago.pk %}" class="d-inline ms-2">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-sm btn-outline-secondary">
-            {% if i.pago.estado == 'pagado' %}Marcar pendiente{% else %}Marcar pagado{% endif %}
-          </button>
-        </form>
-      </td>
-      <td>
-        {% if i.asistencia.participo %}<span class="badge bg-success">Sí</span>
-        {% else %}<span class="badge bg-secondary">No</span>{% endif %}
-        <form method="post" action="{% url 'cambiar_participacion' i.asistencia.pk %}" class="d-inline ms-2">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-sm btn-outline-secondary">
-            {% if i.asistencia.participo %}Quitar{% else %}Marcar participó{% endif %}
-          </button>
-        </form>
-      </td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="6" class="text-center text-muted">Aún no hay jugadores inscritos.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+<a href="{% url 'torneo_lista' %}" class="btn btn-negro">Volver a torneos</a>
 {% endblock %}

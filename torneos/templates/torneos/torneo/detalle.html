@@ -1,51 +1,63 @@
 {% extends "base.html" %}
 {% block title %}{{ torneo.nombre }}{% endblock %}
+
 {% block content %}
-<div class="row align-items-center mb-4">
-  {% if torneo.juego.imagen %}
-  <div class="col-md-4 mb-3 mb-md-0">
-    <img src="{{ torneo.juego.imagen.url }}" class="img-fluid rounded" alt="{{ torneo.juego.nombre }}">
-  </div>
-  {% endif %}
-
-  <div class="{% if torneo.juego.imagen %}col-md-8{% else %}col-12{% endif %}">
-    <span class="badge bg-dark mb-2">{{ torneo.juego.nombre }}</span>
-    <h1 class="display-5 fw-bold">{{ torneo.nombre }}</h1>
-
-    <div class="row g-3 mt-2 fs-5">
-      <div class="col-6"><strong>Fecha:</strong> {{ torneo.fecha|date:"d/m/Y" }}</div>
-      <div class="col-6"><strong>Hora:</strong> {{ torneo.hora|time:"H:i" }}</div>
-      <div class="col-6"><strong>Cupos disponibles:</strong> {{ cupos }} de {{ torneo.cupo_maximo }}</div>
-      <div class="col-6"><strong>Inscripción:</strong> ${{ torneo.costo }}</div>
-      <div class="col-12"><strong>Estado:</strong> {{ torneo.get_estado_display }}</div>
+<div class="row g-5 align-items-center">
+  <div class="col-md-6">
+    <div class="tarjeta-img tarjeta-img-grande">
+      {% if torneo.juego.imagen %}
+      <img src="{{ torneo.juego.imagen.url }}" alt="{{ torneo.juego.nombre }}">
+      {% else %}
+      <span>{{ torneo.juego.nombre }}</span>
+      {% endif %}
     </div>
   </div>
-</div>
 
-<div class="mb-4">
-  {% if user.is_authenticated %}
-    {% if inscrito %}
-      <span class="badge bg-success fs-6">Ya estás inscrito</span>
-    {% elif cupos <= 0 %}
-      <span class="badge bg-danger fs-6">Cupo lleno</span>
-    {% elif torneo.estado == 'programado' %}
-      <form method="post" action="{% url 'inscribirse' torneo.pk %}">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-success btn-lg">Inscribirme</button>
-      </form>
+  <div class="col-md-6">
+    <p class="mb-2">
+      <span class="badge bg-dark">{{ torneo.juego.nombre }}</span>
+      {% if torneo.estado == 'cancelado' %}<span class="badge bg-danger">Cancelado</span>
+      {% elif torneo.estado == 'finalizado' %}<span class="badge bg-secondary">Finalizado</span>
+      {% else %}<span class="badge bg-success">Programado</span>{% endif %}
+    </p>
+    <h1 class="titulo-torneo">{{ torneo.nombre }}</h1>
+    <p class="text-muted fs-5 mb-0">
+      <strong class="text-dark">Fecha:</strong> {{ torneo.fecha|date:"d/m/Y" }} a las {{ torneo.hora|time:"H:i" }}
+    </p>
+
+    <p class="precio-torneo my-3">{% if torneo.costo %}${{ torneo.costo }}{% else %}Gratis{% endif %}</p>
+
+    <p class="fw-semibold">
+      <span class="text-primary">&#10003;</span> {{ cupos }} cupos disponibles de {{ torneo.cupo_maximo }}
+    </p>
+
+    <div class="d-flex flex-wrap gap-2 align-items-stretch">
+      {% if user.is_authenticated %}
+        {% if inscrito %}
+        <span class="badge bg-success fs-6 align-self-center">Ya estás inscrito</span>
+        {% elif cupos <= 0 %}
+        <span class="badge bg-danger fs-6 align-self-center">Cupo lleno</span>
+        {% elif torneo.estado == 'programado' %}
+        <form method="post" action="{% url 'inscribirse' torneo.pk %}" class="flex-fill">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary btn-lg w-100">Inscribirme</button>
+        </form>
+        {% endif %}
+      {% else %}
+        <a href="{% url 'iniciar_sesion' %}" class="btn btn-primary btn-lg flex-fill">Inicia sesión para inscribirte</a>
+      {% endif %}
+      <a href="{% url 'torneo_lista' %}" class="btn btn-negro btn-lg flex-fill">Volver a torneos</a>
+    </div>
+
+    {% if user.is_staff %}
+    <div class="mt-3">
+      <a href="{% url 'lista_inscritos' torneo.pk %}" class="btn btn-outline-primary">Ver inscritos y pagos</a>
+    </div>
     {% endif %}
-  {% else %}
-    <p class="text-muted">Inicia sesión para inscribirte.</p>
-  {% endif %}
+  </div>
 </div>
 
-<h2 class="h4">Reglas</h2>
-<p class="fs-5">{{ torneo.reglas|default:"Sin reglas especificadas."|linebreaksbr }}</p>
-
-<a href="{% url 'torneo_lista' %}" class="btn btn-outline-secondary mt-3">Volver a torneos</a>
-{% if user.is_staff %}
-  <a href="{% url 'lista_inscritos' torneo.pk %}" class="btn btn-outline-primary mt-3 ms-2">
-    Ver inscritos y pagos
-  </a>
-{% endif %}
+<hr class="my-4">
+<h2 class="h5">Reglas</h2>
+<p class="text-muted">{{ torneo.reglas|default:"Sin reglas especificadas."|linebreaksbr }}</p>
 {% endblock %}
