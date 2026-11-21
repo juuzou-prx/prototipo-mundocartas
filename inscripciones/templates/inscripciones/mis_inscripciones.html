@@ -1,45 +1,52 @@
 {% extends "base.html" %}
 {% block title %}Mis torneos{% endblock %}
+
 {% block content %}
-<h1 class="h3 mb-3">Mis torneos</h1>
-<table class="table table-striped align-middle">
-  <thead>
-    <tr>
-      <th>Fecha</th>
-      <th>Hora</th>
-      <th>Torneo</th>
-      <th>Juego</th>
-      <th>Estado del torneo</th>
-      <th>Pago</th>
-      <th class="text-end">Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for i in inscripciones %}
-    <tr>
-      <td>{{ i.torneo.fecha|date:"d/m/Y" }}</td>
-      <td>{{ i.torneo.hora|time:"H:i" }}</td>
-      <td>{{ i.torneo.nombre }}</td>
-      <td>{{ i.torneo.juego.nombre }}</td>
-      <td>{{ i.torneo.get_estado_display }}</td>
-      <td>
-        {% if i.pago.estado == 'pagado' %}<span class="badge bg-success">Pagado</span>
-        {% elif i.torneo.costo > 0 %}<span class="badge bg-warning text-dark">Pendiente</span>
-        {% else %}<span class="badge bg-secondary">Sin costo</span>{% endif %}
-      </td>
-      <td class="text-end">
-        <a href="{% url 'torneo_detalle' i.torneo.pk %}" class="btn btn-sm btn-outline-primary">Ver detalles</a>
+<h1 class="titulo-seccion">Mis torneos</h1>
+<p class="text-muted mb-4">Tus inscripciones activas y el estado de tu pago.</p>
+
+{% for i in inscripciones %}
+<div class="card tarjeta-torneo mb-3">
+  <div class="row g-0 align-items-center">
+    <div class="col-md-2">
+      <div class="tarjeta-img tarjeta-img-chica">
+        {% if i.torneo.juego.imagen %}
+        <img src="{{ i.torneo.juego.imagen.url }}" alt="{{ i.torneo.juego.nombre }}">
+        {% else %}
+        <span>{{ i.torneo.juego.nombre }}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-md-6 p-3">
+      <p class="text-muted small mb-1">{{ i.torneo.juego.nombre }}</p>
+      <h2 class="h5 mb-1">{{ i.torneo.nombre }}</h2>
+      <p class="mb-2">{{ i.torneo.fecha|date:"d/m/Y" }} a las {{ i.torneo.hora|time:"H:i" }}</p>
+      {% if i.torneo.estado == 'cancelado' %}<span class="badge bg-danger">Torneo cancelado</span>
+      {% elif i.torneo.estado == 'finalizado' %}<span class="badge bg-secondary">Torneo finalizado</span>
+      {% else %}<span class="badge bg-success">Programado</span>{% endif %}
+      {% if i.pago.estado == 'pagado' %}<span class="badge bg-success">Pagado</span>
+      {% elif i.torneo.costo > 0 %}<span class="badge bg-warning text-dark">Pago pendiente</span>
+      {% else %}<span class="badge bg-secondary">Sin costo</span>{% endif %}
+    </div>
+
+    <div class="col-md-4 p-3">
+      <div class="d-grid gap-2">
+        <a href="{% url 'torneo_detalle' i.torneo.pk %}" class="btn btn-sm btn-negro">Ver detalles</a>
         {% if i.pago.estado != 'pagado' and i.torneo.costo > 0 and i.torneo.estado == 'programado' %}
-        <a href="{% url 'iniciar_pago' i.pk %}" class="btn btn-sm btn-success">Pagar con Webpay</a>
+        <a href="{% url 'iniciar_pago' i.pk %}" class="btn btn-sm btn-primary">Pagar con Webpay</a>
         {% endif %}
         {% if i.torneo.estado == 'programado' %}
         <a href="{% url 'cancelar_inscripcion' i.pk %}" class="btn btn-sm btn-outline-danger">Cancelar inscripción</a>
         {% endif %}
-      </td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="7" class="text-center text-muted">Aún no estás inscrito en ningún torneo.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+      </div>
+    </div>
+  </div>
+</div>
+{% empty %}
+<div class="text-center text-muted py-5">
+  <p>Aún no estás inscrito en ningún torneo.</p>
+  <a href="{% url 'torneo_lista' %}" class="btn btn-primary">Ver torneos</a>
+</div>
+{% endfor %}
 {% endblock %}

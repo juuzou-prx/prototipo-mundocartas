@@ -132,3 +132,40 @@ a {
   border-color: #333333;
   color: #ffffff;
 }
+
+.titulo-seccion {
+  font-weight: 600;
+  font-size: 2rem;
+  display: inline-block;
+  padding-bottom: 0.25rem;
+  border-bottom: 3px solid var(--mc-azul);
+  margin-bottom: 0.5rem;
+}
+
+.tarjeta-img-chica {
+  height: 110px;
+}
+
+.btn {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-radius: 0.25rem;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+}
+
+.tarjeta-tabla {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.miniatura-juego {
+  height: 40px;
+  width: 60px;
+  object-fit: contain;
+}
