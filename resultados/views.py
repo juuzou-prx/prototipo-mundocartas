@@ -6,6 +6,7 @@ from inscripciones.models import Inscripcion
 from torneos.models import Torneo
 from .forms import ResultadoForm
 from .models import Resultado, Ranking
+from torneos.models import Juego, Torneo
 
 
 def _inscripciones_disponibles(torneo, resultado=None):
@@ -77,9 +78,18 @@ def resultado_eliminar(request, pk):
 
 @login_required
 def ranking_lista(request):
-    jugadores = list(Ranking.objects.select_related('usuario'))
+    juegos = list(Juego.objects.all())
+    # juego elegido en la pagina (?juego=ID); si no hay, el primero que tenga ranking
+    elegido = None
+    if request.GET.get('juego', '').isdigit():
+        elegido = next((j for j in juegos if j.pk == int(request.GET['juego'])), None)
+    if elegido is None:
+        con_ranking = Ranking.objects.values_list('juego_id', flat=True).distinct()
+        elegido = next((j for j in juegos if j.pk in con_ranking), juegos[0] if juegos else None)
+    jugadores = list(Ranking.objects.filter(juego=elegido).select_related('usuario')) if elegido else []
     # empate: mismo puntaje = misma posicion, sin desempate inventado 
     for r in jugadores:
         r.posicion = 1 + sum(1 for otro in jugadores if otro.puntos_acumulados > r.puntos_acumulados)
     return render(request, 'resultados/ranking.html', {
-        'jugadores': jugadores, 'titulo': 'Ranking de jugadores'})
+        'jugadores': jugadores, 'juegos': juegos, 'elegido': elegido,
+        'titulo': 'Ranking de jugadores'})
