@@ -6,7 +6,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RecompensaForm
 from .models import Recompensa, CanjeRecompensa, resumen_puntos
-from django.db.models import ProtectedError
+from django.contrib.auth import get_user_model
+from django.db.models import Count, ProtectedError, Q
 
 
 @login_required
@@ -78,3 +79,14 @@ def recompensa_eliminar(request, pk):
         return redirect('recompensa_lista')
     return render(request, 'recompensas/eliminar.html', {
         'recompensa': recompensa, 'titulo': 'Eliminar recompensa'})
+
+@staff_member_required
+def participacion_lista(request):
+    """HU30: cuantos torneos ha jugado cada jugador."""
+    jugadores = (get_user_model().objects.filter(is_staff=False)
+                 .annotate(
+                     jugados=Count('inscripciones', filter=Q(inscripciones__asistencia__participo=True), distinct=True),
+                     inscritos=Count('inscripciones', filter=Q(inscripciones__estado='activa'), distinct=True))
+                 .order_by('-jugados', 'username'))
+    return render(request, 'recompensas/participacion.html', {
+        'jugadores': jugadores, 'titulo': 'Participación de jugadores'})
