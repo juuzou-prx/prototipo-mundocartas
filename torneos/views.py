@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import Juego, Torneo
 from .forms import JuegoForm, TorneoForm
+from django.db.models import ProtectedError
 
 def juego_lista(request):
     juegos = Juego.objects.all()
@@ -31,8 +32,11 @@ def juego_editar(request, pk):
 def juego_eliminar(request, pk):
     juego = get_object_or_404(Juego, pk=pk)
     if request.method == 'POST':
-        juego.delete()
-        messages.success(request, 'Juego eliminado correctamente.')
+        try:
+            juego.delete()
+            messages.success(request, 'Juego eliminado correctamente.')
+        except ProtectedError:
+            messages.error(request, 'No se puede eliminar este juego porque tiene torneos creados con él.')
         return redirect('juego_lista')
     return render(request, 'torneos/juego/eliminar.html', {'juego': juego})
 
