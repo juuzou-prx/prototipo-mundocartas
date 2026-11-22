@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-3">{{ titulo }}</h1>
+<p>¿Seguro que quieres eliminar el resultado de <strong>{{ resultado.inscripcion.usuario.username }}</strong> (puesto {{ resultado.posicion }}) en {{ torneo.nombre }}?</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+  <a href="{% url 'resultado_lista' torneo.pk %}" class="btn btn-outline-secondary">Cancelar</a>
+</form>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Resultados - {{ torneo.nombre }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-end mb-4">
+  <div>
+    <h1 class="titulo-seccion mb-4">{{ titulo }}</h1>
+    <p class="text-muted mb-0">{{ torneo.nombre }} · {{ torneo.juego.nombre }} · {{ torneo.fecha|date:"d/m/Y" }}</p>
+  </div>
+  {% if user.is_staff %}
+  <a href="{% url 'resultado_crear' torneo.pk %}" class="btn btn-primary">Registrar resultado</a>
+  {% endif %}
+</div>
+
+<div class="card tarjeta-tabla mb-4">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>Posición</th>
+          <th>Jugador</th>
+          <th>Puntos</th>
+          {% if user.is_staff %}<th class="text-end">Acciones</th>{% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in resultados %}
+        <tr>
+          <td>{{ r.posicion }}</td>
+          <td>{{ r.inscripcion.usuario.get_full_name|default:r.inscripcion.usuario.username }}</td>
+          <td>{{ r.puntos }}</td>
+          {% if user.is_staff %}
+          <td class="text-end">
+            <a href="{% url 'resultado_editar' r.pk %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+            <a href="{% url 'resultado_eliminar' r.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+          </td>
+          {% endif %}
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center text-muted py-4">Aún no hay resultados registrados.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<a href="{% url 'resultado_indice' %}" class="btn btn-negro">Volver a resultados</a>
+{% endblock %}
