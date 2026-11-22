@@ -5,6 +5,7 @@ from .models import Juego, Torneo
 from .forms import JuegoForm, TorneoForm
 from django.db.models import ProtectedError
 
+@staff_member_required
 def juego_lista(request):
     juegos = Juego.objects.all()
     return render(request, 'torneos/juego/lista.html', {'juegos': juegos})
