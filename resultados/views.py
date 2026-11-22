@@ -7,6 +7,7 @@ from torneos.models import Torneo
 from .forms import ResultadoForm
 from .models import Resultado, Ranking
 from torneos.models import Juego, Torneo
+from django.db.models import Sum
 
 
 def _inscripciones_disponibles(torneo, resultado=None):
@@ -93,3 +94,18 @@ def ranking_lista(request):
     return render(request, 'resultados/ranking.html', {
         'jugadores': jugadores, 'juegos': juegos, 'elegido': elegido,
         'titulo': 'Ranking de jugadores'})
+
+def _contexto_historial(usuario):
+    participaciones = (Inscripcion.objects
+                       .filter(usuario=usuario, asistencia__participo=True)
+                       .select_related('torneo__juego', 'resultado')
+                       .order_by('-torneo__fecha', '-torneo__hora'))
+    total = Resultado.objects.filter(inscripcion__usuario=usuario).aggregate(total=Sum('puntos'))['total'] or 0
+    return {'jugador': usuario, 'participaciones': participaciones, 'total_puntos': total}
+
+
+@login_required
+def historial_mio(request):
+    contexto = _contexto_historial(request.user)
+    contexto.update({'titulo': 'Mi historial', 'es_propio': True})
+    return render(request, 'resultados/historial.html', contexto)

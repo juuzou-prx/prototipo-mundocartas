@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<h1 class="titulo-seccion mb-3">
+  {% if es_propio %}Mi historial{% else %}Historial de {{ jugador.get_full_name|default:jugador.username }}{% endif %}
+</h1>
+
+<div class="alert alert-secondary d-flex flex-wrap gap-4 mb-4">
+  <span><strong>Torneos jugados:</strong> {{ participaciones|length }}</span>
+  <span><strong>Puntos obtenidos:</strong> {{ total_puntos }}</span>
+</div>
+
+<div class="card tarjeta-tabla mb-4">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>Fecha</th>
+          <th>Torneo</th>
+          <th>Juego</th>
+          <th>Posición</th>
+          <th>Puntos</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in participaciones %}
+        <tr>
+          <td>{{ p.torneo.fecha|date:"d/m/Y" }}</td>
+          <td>{{ p.torneo.nombre }}</td>
+          <td>{{ p.torneo.juego.nombre }}</td>
+          {% if p.resultado %}
+          <td>{{ p.resultado.posicion }}</td>
+          <td>{{ p.resultado.puntos }}</td>
+          {% else %}
+          <td colspan="2" class="text-muted">Sin resultado registrado</td>
+          {% endif %}
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-center text-muted py-4">Aún no hay torneos jugados.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% if not es_propio %}
+<a href="{% url 'participacion_lista' %}" class="btn btn-negro">Volver a participación</a>
+{% endif %}
+{% endblock %}
