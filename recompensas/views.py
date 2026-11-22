@@ -6,6 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RecompensaForm
 from .models import Recompensa, CanjeRecompensa, resumen_puntos
+from django.db.models import ProtectedError
 
 
 @login_required
@@ -69,8 +70,11 @@ def recompensa_editar(request, pk):
 def recompensa_eliminar(request, pk):
     recompensa = get_object_or_404(Recompensa, pk=pk)
     if request.method == 'POST':
-        recompensa.delete()
-        messages.success(request, 'Recompensa eliminada correctamente.')
+        try:
+            recompensa.delete()
+            messages.success(request, 'Recompensa eliminada correctamente.')
+        except ProtectedError:
+            messages.error(request, 'No se puede eliminar: la recompensa ya tiene canjes. Puedes desactivarla en su lugar.')
         return redirect('recompensa_lista')
     return render(request, 'recompensas/eliminar.html', {
         'recompensa': recompensa, 'titulo': 'Eliminar recompensa'})
