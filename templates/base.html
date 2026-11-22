@@ -52,8 +52,15 @@
                 {% endif %}
                 {% if user.is_staff %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'juego_lista' %}">Juegos</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'participacion_lista' %}">Participación</a></li>
                 {% endif %}
+                {% if user.is_authenticated %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'resultado_indice' %}">Resultados</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'ranking_lista' %}">Ranking</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'recompensa_lista' %}">Recompensas</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'canje_lista' %}">Canjes</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'historial_mio' %}">Mi historial</a></li>
+                {% endif %}
             </ul>
         </div>
     </nav>

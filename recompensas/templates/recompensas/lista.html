@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Recompensas{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-end mb-3">
+  <h1 class="titulo-seccion mb-0">{{ titulo }}</h1>
+  {% if user.is_staff %}
+  <a href="{% url 'recompensa_crear' %}" class="btn btn-primary">Nueva recompensa</a>
+  {% endif %}
+</div>
+
+<div class="alert alert-secondary d-flex flex-wrap gap-4 mb-4">
+  <span><strong>Puntos disponibles:</strong> {{ puntos.disponibles }}</span>
+  <span class="text-muted">Ganados: {{ puntos.ganados }} · Gastados: {{ puntos.gastados }}</span>
+</div>
+
+<div class="card tarjeta-tabla">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>Recompensa</th>
+          <th>Descripción</th>
+          <th>Costo (puntos)</th>
+          <th class="text-end">Canje</th>
+          {% if user.is_staff %}<th>Activa</th><th class="text-end">Acciones</th>{% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in recompensas %}
+        <tr>
+          <td>{{ r.nombre }}</td>
+          <td>{{ r.descripcion|default:"-" }}</td>
+          <td>{{ r.costo_puntos }}</td>
+          <td class="text-end">
+            {% if r.activa and r.faltan == 0 %}
+            <form method="post" action="{% url 'canje_crear' r.pk %}" onsubmit="return confirm('¿Canjear {{ r.nombre|escapejs }} por {{ r.costo_puntos }} puntos?');">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-primary">Canjear</button>
+            </form>
+            {% elif r.activa %}
+            <span class="text-muted small">Te faltan {{ r.faltan }} pts</span>
+            {% else %}
+            <span class="text-muted small">No disponible</span>
+            {% endif %}
+          </td>
+          {% if user.is_staff %}
+          <td>{% if r.activa %}Sí{% else %}No{% endif %}</td>
+          <td class="text-end">
+            <a href="{% url 'recompensa_editar' r.pk %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+            <a href="{% url 'recompensa_eliminar' r.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+          </td>
+          {% endif %}
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center text-muted py-4">Aún no hay recompensas.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
