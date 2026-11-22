@@ -8,6 +8,7 @@ from .forms import ResultadoForm
 from .models import Resultado, Ranking
 from torneos.models import Juego, Torneo
 from django.db.models import Sum
+from django.contrib.auth import get_user_model
 
 
 def _inscripciones_disponibles(torneo, resultado=None):
@@ -108,4 +109,11 @@ def _contexto_historial(usuario):
 def historial_mio(request):
     contexto = _contexto_historial(request.user)
     contexto.update({'titulo': 'Mi historial', 'es_propio': True})
+    return render(request, 'resultados/historial.html', contexto)
+
+@staff_member_required
+def historial_jugador(request, usuario_id):
+    jugador = get_object_or_404(get_user_model(), pk=usuario_id)
+    contexto = _contexto_historial(jugador)
+    contexto.update({'titulo': 'Historial del jugador', 'es_propio': False})
     return render(request, 'resultados/historial.html', contexto)

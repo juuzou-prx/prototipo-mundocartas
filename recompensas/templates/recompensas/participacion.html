@@ -18,7 +18,7 @@
       <tbody>
         {% for j in jugadores %}
         <tr>
-          <td>{{ j.get_full_name|default:j.username }}</td>
+          <td><a href="{% url 'historial_jugador' j.pk %}">{{ j.get_full_name|default:j.username }}</a></td>
           <td>{{ j.jugados }}</td>
           <td>{{ j.inscritos }}</td>
         </tr>

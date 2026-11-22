@@ -9,4 +9,5 @@ urlpatterns = [
     path('<int:pk>/editar/', views.resultado_editar, name='resultado_editar'),
     path('<int:pk>/eliminar/', views.resultado_eliminar, name='resultado_eliminar'),
     path('historial/', views.historial_mio, name='historial_mio'),
+    path('historial/<int:usuario_id>/', views.historial_jugador, name='historial_jugador'),
 ]
