@@ -133,7 +133,6 @@ def pago_exitoso(request):
     pago.estado = 'pagado'
     pago.fecha_pago = timezone.now()
     pago.save()
-    messages.success(request, 'Pago exitoso con Webpay.')
     return render(request, 'inscripciones/pago_exitoso.html', {'pago': pago, 'response': response})
 
 @staff_member_required(login_url='iniciar_sesion')
