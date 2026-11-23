@@ -11,5 +11,5 @@ class Error405Middleware:
     def __call__(self, request):
         response = self.get_response(request)
         if response.status_code == 405:
-            return render(request, '405.html', status=405)
+            return render(request, 'control_errores/405.html', status=405)
         return response
