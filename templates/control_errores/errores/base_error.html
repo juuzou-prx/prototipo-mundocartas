@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% comment %}
+Plantilla base de las páginas de error (400, 403, 403_csrf, 404, 405).
+Cada página hija solo define: title, codigo, encabezado, mensaje y, si quiere, acciones/detalle.
+{% endcomment %}
+{% block content %}
+<style>
+  .error-pagina {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 2rem 0;
+    text-align: center;
+  }
+  .error-carta {
+    width: 150px;
+    height: 210px;
+    margin: 0 auto 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--mc-gris);
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    box-shadow: inset 0 0 0 6px #ffffff, inset 0 0 0 8px var(--mc-azul);
+    transform: rotate(-4deg);
+  }
+  .error-codigo {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--mc-negro);
+  }
+</style>
+<div class="error-pagina">
+  <div class="error-carta"><span class="error-codigo">{% block codigo %}{% endblock %}</span></div>
+  <h1 class="titulo-seccion mb-3">{% block encabezado %}{% endblock %}</h1>
+  <p class="text-muted fs-5 mb-3">{% block mensaje %}{% endblock %}</p>
+  {% block detalle %}{% endblock %}
+  <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+    {% block acciones %}
+    <a href="{% url 'torneo_lista' %}" class="btn btn-primary">Ver torneos</a>
+    <button type="button" class="btn btn-negro" onclick="history.back()">Volver atrás</button>
+    {% endblock %}
+  </div>
+</div>
+{% endblock %}

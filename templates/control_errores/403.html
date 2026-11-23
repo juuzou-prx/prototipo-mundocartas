@@ -1,0 +1,14 @@
+{% extends "errores/base_error.html" %}
+{% block title %}Acceso denegado | Mundo Cartas{% endblock %}
+{% block codigo %}403{% endblock %}
+{% block encabezado %}Acceso denegado{% endblock %}
+{% block mensaje %}No tienes permiso para ver esta página. Si crees que es un error, avisa a un administrador de Mundo Cartas.{% endblock %}
+{% block acciones %}
+  {% if user.is_authenticated %}
+  <a href="{% url 'torneo_lista' %}" class="btn btn-primary">Ver torneos</a>
+  <button type="button" class="btn btn-negro" onclick="history.back()">Volver atrás</button>
+  {% else %}
+  <a href="{% url 'iniciar_sesion' %}" class="btn btn-primary">Iniciar sesión</a>
+  <a href="{% url 'torneo_lista' %}" class="btn btn-negro">Ver torneos</a>
+  {% endif %}
+{% endblock %}

@@ -3,6 +3,11 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from torneos import views as torneos_view
+from mundocartas import views as error_views
+
+handler400 = 'mundocartas.views.error_400'
+handler403 = 'mundocartas.views.error_403'
+handler404 = 'mundocartas.views.error_404'
 
 urlpatterns = [
     path('', torneos_view.torneo_lista, name='inicio'),
@@ -16,3 +21,4 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += [path('probar-error/<str:codigo>/', error_views.probar_error)]

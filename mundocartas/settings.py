@@ -63,6 +63,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_URL = '/usuarios/iniciar_sesion/'
 LOGIN_REDIRECT_URL = '/torneos/'
 LOGOUT_REDIRECT_URL = '/usuarios/iniciar_sesion/'
+CSRF_FAILURE_VIEW = 'mundocartas.views.csrf_failure'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -72,6 +73,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'mundocartas.middleware.Error405Middleware',
 ]
 
 ROOT_URLCONF = 'mundocartas.urls'
