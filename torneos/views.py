@@ -5,12 +5,12 @@ from .models import Juego, Torneo
 from .forms import JuegoForm, TorneoForm
 from django.db.models import ProtectedError
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def juego_lista(request):
     juegos = Juego.objects.all()
     return render(request, 'torneos/juego/lista.html', {'juegos': juegos})
 
-
+@staff_member_required(login_url='iniciar_sesion')
 def juego_crear(request):
     form = JuegoForm(request.POST or None, request.FILES or None)
     if form.is_valid():
@@ -19,7 +19,7 @@ def juego_crear(request):
         return redirect('juego_lista')
     return render(request, 'torneos/juego/form.html', {'form': form, 'titulo': 'Nuevo juego'})
 
-
+@staff_member_required(login_url='iniciar_sesion')
 def juego_editar(request, pk):
     juego = get_object_or_404(Juego, pk=pk)
     form = JuegoForm(request.POST or None, request.FILES or None, instance=juego)
@@ -29,7 +29,7 @@ def juego_editar(request, pk):
         return redirect('juego_lista')
     return render(request, 'torneos/juego/form.html', {'form': form, 'titulo': 'Editar juego'})
 
-
+@staff_member_required(login_url='iniciar_sesion')
 def juego_eliminar(request, pk):
     juego = get_object_or_404(Juego, pk=pk)
     if request.method == 'POST':
@@ -58,7 +58,7 @@ def torneo_detalle(request, pk):
         'inscrito': inscrito,
     })
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def torneo_crear(request):
     form = TorneoForm(request.POST or None)
     if form.is_valid():
@@ -67,7 +67,7 @@ def torneo_crear(request):
         return redirect('torneo_lista')
     return render(request, 'torneos/torneo/form.html', {'form': form, 'titulo': 'Nuevo torneo'})
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def torneo_editar(request, pk):
     torneo = get_object_or_404(Torneo, pk=pk)
     form = TorneoForm(request.POST or None, instance=torneo)
@@ -77,7 +77,7 @@ def torneo_editar(request, pk):
         return redirect('torneo_lista')
     return render(request, 'torneos/torneo/form.html', {'form': form, 'titulo': 'Editar torneo'})
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def torneo_cancelar(request, pk):
     torneo = get_object_or_404(Torneo, pk=pk)
     if request.method == 'POST':
