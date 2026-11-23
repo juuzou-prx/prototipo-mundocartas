@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Eliminar {{ torneo.nombre }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <h1 class="h3 mb-3">Eliminar torneo</h1>
+    <p>¿Estás seguro de que deseas eliminar permanentemente <strong>{{ torneo.nombre }}</strong>?</p>
+    <p class="text-muted small mb-4">Esta acción no se puede deshacer. Si el torneo ya tiene jugadores inscritos, no podrá eliminarse (deberás cancelarlo).</p>
+
+    <form method="post" class="d-flex gap-2">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+      <a href="{% url 'torneo_detalle' torneo.pk %}" class="btn btn-negro">Volver</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
