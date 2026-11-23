@@ -39,7 +39,7 @@ def resultado_lista(request, torneo_id):
     })
 
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def resultado_crear(request, torneo_id):
     torneo = get_object_or_404(Torneo, pk=torneo_id)
     form = ResultadoForm(request.POST or None)
@@ -52,7 +52,7 @@ def resultado_crear(request, torneo_id):
         'form': form, 'torneo': torneo, 'titulo': 'Registrar resultado'})
 
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def resultado_editar(request, pk):
     resultado = get_object_or_404(Resultado, pk=pk)
     torneo = resultado.inscripcion.torneo
@@ -66,7 +66,7 @@ def resultado_editar(request, pk):
         'form': form, 'torneo': torneo, 'titulo': 'Editar resultado'})
 
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def resultado_eliminar(request, pk):
     resultado = get_object_or_404(Resultado, pk=pk)
     torneo = resultado.inscripcion.torneo
@@ -111,7 +111,7 @@ def historial_mio(request):
     contexto.update({'titulo': 'Mi historial', 'es_propio': True})
     return render(request, 'resultados/historial.html', contexto)
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def historial_jugador(request, usuario_id):
     jugador = get_object_or_404(get_user_model(), pk=usuario_id)
     contexto = _contexto_historial(jugador)

@@ -46,7 +46,7 @@ def canje_lista(request):
         'canjes': canjes, 'puntos': resumen_puntos(request.user), 'titulo': 'Canjes'})
 
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def recompensa_crear(request):
     form = RecompensaForm(request.POST or None)
     if form.is_valid():
@@ -56,7 +56,7 @@ def recompensa_crear(request):
     return render(request, 'recompensas/form.html', {'form': form, 'titulo': 'Nueva recompensa'})
 
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def recompensa_editar(request, pk):
     recompensa = get_object_or_404(Recompensa, pk=pk)
     form = RecompensaForm(request.POST or None, instance=recompensa)
@@ -67,7 +67,7 @@ def recompensa_editar(request, pk):
     return render(request, 'recompensas/form.html', {'form': form, 'titulo': 'Editar recompensa'})
 
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def recompensa_eliminar(request, pk):
     recompensa = get_object_or_404(Recompensa, pk=pk)
     if request.method == 'POST':
@@ -80,7 +80,7 @@ def recompensa_eliminar(request, pk):
     return render(request, 'recompensas/eliminar.html', {
         'recompensa': recompensa, 'titulo': 'Eliminar recompensa'})
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def participacion_lista(request):
     """HU30: cuantos torneos ha jugado cada jugador."""
     jugadores = (get_user_model().objects.filter(is_staff=False)
