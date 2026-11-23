@@ -53,7 +53,7 @@ def cancelar_inscripcion(request, pk):
     return render(request, 'inscripciones/cancelar_inscripcion.html', {'inscripcion': inscripcion})
 
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def lista_inscritos(request, torneo_id):
     torneo = get_object_or_404(Torneo, pk=torneo_id)
     activas = torneo.inscripciones.filter(estado='activa')
@@ -136,7 +136,7 @@ def pago_exitoso(request):
     messages.success(request, 'Pago exitoso con Webpay.')
     return render(request, 'inscripciones/pago_exitoso.html', {'pago': pago, 'response': response})
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def cambiar_pago(request, pago_id):
     pago = get_object_or_404(Pago, pk=pago_id)
     if request.method == 'POST':
@@ -153,7 +153,7 @@ def cambiar_pago(request, pago_id):
         pago.save()
     return redirect('lista_inscritos', torneo_id=pago.inscripcion.torneo_id)
 
-@staff_member_required
+@staff_member_required(login_url='iniciar_sesion')
 def cambiar_participacion(request, asistencia_id):
     asistencia = get_object_or_404(Asistencia, pk=asistencia_id)
     if request.method == 'POST':
