@@ -86,3 +86,15 @@ def torneo_cancelar(request, pk):
         messages.success(request, 'Torneo cancelado correctamente.')
         return redirect('torneo_lista')
     return render(request, 'torneos/torneo/cancelar.html', {'torneo': torneo})
+
+@staff_member_required(login_url='iniciar_sesion')
+def torneo_eliminar(request, pk):
+    torneo = get_object_or_404(Torneo, pk=pk)
+    if request.method == 'POST':
+        if torneo.estado == 'programado' and torneo.inscripciones.filter(estado='activa').exists():
+            messages.error(request, 'No puedes eliminar un torneo programado con jugadores inscritos. Cancélalo primero.')
+            return redirect('torneo_detalle', pk=torneo.pk)
+        torneo.delete()
+        messages.success(request, 'Torneo eliminado correctamente.')
+        return redirect('torneo_lista')
+    return render(request, 'torneos/torneo/eliminar.html', {'torneo': torneo})
