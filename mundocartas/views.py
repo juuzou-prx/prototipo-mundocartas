@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.http import Http404
+from django.http import HttpResponseServerError
+from django.template.loader import render_to_string
 from django.shortcuts import render
 
 
@@ -7,30 +9,32 @@ from django.shortcuts import render
 # y en settings.py (CSRF_FAILURE_VIEW). El 500 lo resuelve Django solo con templates/500.html.
 
 def error_400(request, exception=None):
-    return render(request, '400.html', status=400)
+    return render(request, 'control_errores/400.html', status=400)
 
 
 def error_403(request, exception=None):
-    return render(request, '403.html', status=403)
+    return render(request, 'control_errores/403.html', status=403)
 
 
 def error_404(request, exception=None):
-    return render(request, '404.html', status=404)
+    return render(request, 'control_errores/404.html', status=404)
 
+def error_500(request):
+    return HttpResponseServerError(render_to_string('control_errores/500.html'))
 
 def csrf_failure(request, reason=''):
     # el detalle técnico solo se muestra en desarrollo
-    return render(request, '403_csrf.html', {'reason': reason if settings.DEBUG else ''}, status=403)
+    return render(request, 'control_errores/403_csrf.html', {'reason': reason if settings.DEBUG else ''}, status=403)
 
 
 # Solo para desarrollo: permite ver cada página con DEBUG=True (/probar-error/404/, etc.)
 PAGINAS = {
-    '400': ('400.html', 400),
-    '403': ('403.html', 403),
-    'csrf': ('403_csrf.html', 403),
-    '404': ('404.html', 404),
-    '405': ('405.html', 405),
-    '500': ('500.html', 500),
+    '400': ('control_errores/400.html', 400),
+    '403': ('control_errores/403.html', 403),
+    'csrf': ('control_errores/403_csrf.html', 403),
+    '404': ('control_errores/404.html', 404),
+    '405': ('control_errores/405.html', 405),
+    '500': ('control_errores/500.html', 500),
 }
 
 
