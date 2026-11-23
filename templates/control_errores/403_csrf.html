@@ -1,0 +1,6 @@
+{% extends "errores/base_error.html" %}
+{% block title %}Formulario vencido | Mundo Cartas{% endblock %}
+{% block codigo %}403{% endblock %}
+{% block encabezado %}El formulario venció{% endblock %}
+{% block mensaje %}Por seguridad, este formulario ya no es válido (pasó mucho tiempo o se perdió la sesión). Vuelve a la página anterior, recárgala y envíalo otra vez.{% endblock %}
+{% block detalle %}{% if reason %}<p class="small text-muted">Detalle técnico: {{ reason }}</p>{% endif %}{% endblock %}
